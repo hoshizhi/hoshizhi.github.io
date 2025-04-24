@@ -25,7 +25,7 @@ export const Projects = () => {
                             <div className="py-4 h-64 overflow-hidden">
                                 <img 
                                     src="/images/SocialMediaBlogAPI.jpg" 
-                                    alt="Messages on social media"
+                                    alt="Social Media Blog API"
                                     className="w-full h-full object-cover rounded"
                                 />
                             </div>
