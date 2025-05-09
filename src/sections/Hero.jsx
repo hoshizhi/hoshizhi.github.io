@@ -4,6 +4,7 @@ import HeroExperience from "../components/HeroModels/HeroExperience.jsx";
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import AnimatedCounter from "../components/AnimatedCounter.jsx";
+import AnimatedGif from "./AnimatedGif.jsx";
 
 const Hero = () => {
     useGSAP(() => {
@@ -67,8 +68,9 @@ const Hero = () => {
 
                 {/*RIGHT: 3D MODEL */}
                 <figure>
-                    <div className="hero-3d-layout">
-                        <HeroExperience />
+                    <div className="hero-3d-layout pt-8 sm:pt-12 md:pt-16 lg:pt-24">
+                        {/*<HeroExperience />*/}
+                        <AnimatedGif src="/animations/me-typing.gif" alt="Ash typing animation" />
                     </div>
                 </figure>
 
