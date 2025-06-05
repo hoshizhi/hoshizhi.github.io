@@ -70,7 +70,12 @@ const Hero = () => {
                 <figure>
                     <div className="hero-3d-layout pt-8 sm:pt-12 md:pt-16 lg:pt-24">
                         {/*<HeroExperience />*/}
-                        <AnimatedGif src="/animations/me-typing.gif" alt="Ash typing animation" />
+                        {/*<AnimatedGif src="/animations/me-typing.gif" alt="Ash typing animation" />*/}
+                        <img
+                            src={"/images/ash-workspace.png"}
+                            alt="Ash workspace"
+                            className="w-[80%] md:w-[60%] lg:w-[40%] h-auto object-contain"
+                        />
                     </div>
                 </figure>
 
