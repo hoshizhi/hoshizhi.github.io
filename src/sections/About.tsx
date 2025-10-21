@@ -2,7 +2,7 @@ import { socials } from "../constants"
 
 const About = () => {
     return (
-        <div id="about" className="w-[60%] mx-auto mt-20">
+        <div id="about" className="w-[80%] md:w-[60%] lg:w-[40%] mx-auto mt-20">
             <div className="w-24 m-auto">
                 <img 
                     src="/images/persona.png" 
