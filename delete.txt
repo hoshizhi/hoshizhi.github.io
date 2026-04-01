@@ -1,0 +1,169 @@
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import { verifyOrgAccessInternal } from "./verifyOrgAccess";
+
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+const db = admin.firestore();
+
+export type OrgRole = "owner" | "admin" | "member" | "viewer";
+
+export interface CreateOrgInviteRequest {
+  orgId: string;
+  email: string;
+  role: OrgRole;
+}
+
+export interface CreateOrgInviteResponse {
+  success: boolean;
+  inviteId?: string;
+  error?: string;
+}
+
+/**
+ * Creates an organization invite.
+ * Only org owner/admin can call this function.
+ */
+export const createOrgInvite = functions.https.onCall(
+  async (
+    data: CreateOrgInviteRequest,
+    context: functions.https.CallableContext
+  ): Promise<CreateOrgInviteResponse> => {
+    // Verify authentication
+    if (!context.auth) {
+      return {
+        success: false,
+        error: "Unauthorized: Authentication required",
+      };
+    }
+
+    const uid = context.auth.uid;
+    const { orgId, email, role } = data;
+
+    // Validate input
+    if (!orgId || typeof orgId !== "string") {
+      return {
+        success: false,
+        error: "Invalid request: orgId is required",
+      };
+    }
+
+    if (!email || typeof email !== "string" || !email.includes("@")) {
+      return {
+        success: false,
+        error: "Invalid request: valid email is required",
+      };
+    }
+
+    if (!role || !["owner", "admin", "member", "viewer"].includes(role)) {
+      return {
+        success: false,
+        error: "Invalid request: role must be owner, admin, member, or viewer",
+      };
+    }
+
+    try {
+      // Verify user has permission (owner or admin)
+      const verifyResult = await verifyOrgAccessInternal(uid, orgId);
+
+      if (!verifyResult.success) {
+        return {
+          success: false,
+          error: verifyResult.error,
+        };
+      }
+      
+      const userRole = verifyResult.role;
+      
+      if (userRole !== "owner" && userRole !== "admin") {
+        return {
+          success: false,
+          error: "Forbidden: Only owners and admins can create invites",
+        };
+      }
+
+      // Check if organization exists
+      const orgRef = db.collection("Organizations").doc(orgId);
+      const orgDoc = await orgRef.get();
+
+      if (!orgDoc.exists) {
+        return {
+          success: false,
+          error: "Organization not found",
+        };
+      }
+
+      // Also check if there's a user with this email who is already a member
+      // by looking up users by email and checking their membership
+      let isAlreadyMember = false;
+      try {
+        const userRecord = await admin.auth().getUserByEmail(email.toLowerCase());
+        const existingMemberDoc = await orgRef
+          .collection("members")
+          .doc(userRecord.uid)
+          .get();
+        if (existingMemberDoc.exists) {
+          isAlreadyMember = true;
+        }
+      } catch (error: any) {
+        // User doesn't exist yet, which is fine
+        if (error.code !== "auth/user-not-found") {
+          throw error;
+        }
+      }
+
+      if (isAlreadyMember) {
+        return {
+          success: false,
+          error: "User is already a member of this organization",
+        };
+      }
+
+      // Check for existing pending invite for this email and org
+      const invitesRef = db.collection("organizationInvites");
+      const existingInviteQuery = await invitesRef
+        .where("orgId", "==", orgId)
+        .where("email", "==", email.toLowerCase())
+        .where("status", "==", "pending")
+        .limit(1)
+        .get();
+
+      if (!existingInviteQuery.empty) {
+        const existingInvite = existingInviteQuery.docs[0];
+        return {
+          success: true,
+          inviteId: existingInvite.id,
+        };
+      }
+
+      // Create invite document
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days expiry
+
+      const inviteData = {
+        orgId,
+        email: email.toLowerCase(),
+        role,
+        invitedByUid: uid,
+        status: "pending" as const,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        expiresAt: admin.firestore.Timestamp.fromDate(expiresAt),
+      };
+
+      const inviteRef = await invitesRef.add(inviteData);
+
+      return {
+        success: true,
+        inviteId: inviteRef.id,
+      };
+    } catch (error) {
+      console.error("Error creating org invite:", error);
+      return {
+        success: false,
+        error: "Internal server error",
+      };
+    }
+  }
+);

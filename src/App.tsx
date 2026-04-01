@@ -4,7 +4,7 @@ import Experience from "./sections/Experience"
 
 function App() {
   return (
-    <div>
+    <div className="mb-20">
       <NavBar />
       <About /> 
       <Experience />

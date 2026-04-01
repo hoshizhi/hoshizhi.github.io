@@ -28,7 +28,7 @@ const About = () => {
                             <img 
 								src={social.icon}
 								alt={`social-icon-${index}`}
-								className="w-12 h-12 border p-3 border-gray-300 bg-white rounded-xl"
+								className="w-12 h-12 border p-3 border-gray-300 dark:border-gray-600 bg-white dark:bg-[#444444] rounded-xl"
 							/>
                         </a>
                     ))}
