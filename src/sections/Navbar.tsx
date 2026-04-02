@@ -16,9 +16,9 @@ const NavBar = () => {
                 Ashley Lin
             </div>
             <div className="gap-4 flex items-center">
-                <a href="#about" className="hover:text-[#b36f5e]">About</a>
-                <a href="#experience" className="hover:text-[#b36f5e]">Experience</a>
-                <a href="#projects" className="hover:text-[#b36f5e]">Projects</a>
+                <a href="#about" className="hover:text-[#688734] dark:hover:text-[#b9d37f]">About</a>
+                <a href="#experience" className="hover:text-[#688734] dark:hover:text-[#b9d37f]">Experience</a>
+                <a href="#projects" className="hover:text-[#688734] dark:hover:text-[#b9d37f]">Projects</a>
                 <button onClick={() => setDark(!dark)} className="ml-2 cursor-pointer" aria-label="Toggle dark mode">
                     {dark ? (
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

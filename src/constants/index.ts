@@ -4,6 +4,13 @@ export const socials = [
     { link: "https://www.github.com/lin-ash", icon: "/images/Github.png" }
 ];
 
+export const tools = [
+    "React", "React Native", "TypeScript", "JavaScript",
+    "Java", "Python", "Node.js", "Express",
+    "MongoDB", "SQL", "Docker", "Git",
+    "Tailwind CSS", "Figma", "Vite",
+];
+
 export const expCards = [
     {
         title: "Software Engineer",
@@ -19,7 +26,7 @@ export const expCards = [
     {
         title: "Engineering Team Lead",
         company: "Vurtuu",
-        date: "June 2025 – October 2025",
+        date: "June 2025 - October 2025",
         responsibilities: [
             "Led engineering team and weekly standups, orchestrating MVP development of a mobile social media platform promoting quality content via a custom engagement metric system",
             "Built full-stack mobile features in React Native (Expo), translating designer mockups into reusable UI/UX components and managing state for scalable, maintainable frontend architecture",

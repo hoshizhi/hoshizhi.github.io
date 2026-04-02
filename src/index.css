@@ -1,19 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Zen+Kaku+Gothic+New&display=swap');
+
+.section-title {
+    font-family: "Roboto Mono", monospace;
+    font-size: large;
+    font-weight: 500;
+}
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 html,
 body {
-    width: 100dvw;
+    overflow-x: hidden;
     background-color: #ffffff;
     color: black;
     scroll-behavior: smooth;
+    font-family: "Zen Kaku Gothic New", sans-serif;
 }
 
 .dark html,
 .dark body,
 html.dark,
 body.dark {
-    background-color: #333333;
+    background-color: #000000;
     color: #e5e5e5;
 }
